@@ -20,3 +20,4 @@ EXPOSE 8080
 # Run the application using Gunicorn, binding to 0.0.0.0 and the specified port.
 # 'app:app' assumes your Flask application instance is named 'app' in 'app.py'.
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+
