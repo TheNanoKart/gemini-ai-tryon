@@ -72,3 +72,6 @@ images:
   # The image built will be stored in Artifact Registry with these tags
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
