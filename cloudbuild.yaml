@@ -21,15 +21,21 @@ steps:
     # The image name specifies the Artifact Registry repository (tryon-repo)
     # and the image name (gemini-tryon-app).
 
-  # Step 2: Push the Docker image to Google Artifact Registry
-  # Pushes both the commit SHA tagged image and the 'latest' tagged image.
+  # Step 2: Push the Docker image with COMMIT_SHA tag to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    id: Push
+    id: Push-Commit-SHA
     args:
       - 'push'
       - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
 
-  # Step 3: Deploy the image to Google Cloud Run
+  # Step 3: Push the Docker image with 'latest' tag to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push-Latest
+    args:
+      - 'push'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:latest'
+
+  # Step 4: Deploy the image to Google Cloud Run
   # Uses the 'cloud-builders/gcloud' builder to deploy the service.
   # Substitutions like $PROJECT_ID and $COMMIT_SHA are automatically provided by Cloud Build.
   - name: 'gcr.io/google.com/cloudsdk/cloud-sdk'
@@ -46,7 +52,7 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated' # Temporarily allow unauthenticated for API Gateway to reach it.
-                                 # API Gateway will handle authentication.
+                                  # API Gateway will handle authentication.
       - '--set-env-vars=GOOGLE_API_KEY_SECRET_NAME=gemini-api-key-secret' # Secret Manager secret name
                                                                           # This will be used in app.py to fetch the key.
       - '--update-secrets=GOOGLE_API_KEY=gemini-api-key-secret:latest' # Mount the secret as an environment variable
@@ -59,18 +65,12 @@ steps:
       - '--max-instances'
       - '3' # Maximum number of instances for scaling
 
-# Specify a service account with necessary permissions for Cloud Build.
-# This service account needs permissions to:
-# - Cloud Build Service Account (roles/cloudbuild.builds.builder)
-# - Cloud Run Admin (roles/run.admin)
-# - Artifact Registry Writer (roles/artifactregistry.writer)
-# - Secret Manager Secret Accessor (roles/secretmanager.secretAccessor)
-serviceAccount: projects/$PROJECT_ID/serviceAccounts/$PROJECT_NUMBER@cloudbuild.gserviceaccount.com
+# IMPORTANT: Update this serviceAccount to your custom service account
+serviceAccount: serviceAccount:serviceaccounttest@tnk-ai-modelling.iam.gserviceaccount.com
 
 images:
   # The image built will be stored in Artifact Registry with these tags
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:latest'
-
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY    
