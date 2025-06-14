@@ -65,7 +65,7 @@ steps:
 # - Cloud Run Admin (roles/run.admin)
 # - Artifact Registry Writer (roles/artifactregistry.writer)
 # - Secret Manager Secret Accessor (roles/secretmanager.secretAccessor)
-serviceAccount: projects/tnk-ai-modelling/serviceAccounts/28146163990-compute@developer.gserviceaccount.com
+serviceAccount: 28146163990@cloudbuild.gserviceaccount.com
 
 images:
   # The image built will be stored in Artifact Registry with these tags
