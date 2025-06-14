@@ -65,7 +65,7 @@ steps:
 # - Cloud Run Admin (roles/run.admin)
 # - Artifact Registry Writer (roles/artifactregistry.writer)
 # - Secret Manager Secret Accessor (roles/secretmanager.secretAccessor)
-serviceAccount: projects/$PROJECT_ID/serviceAccounts/$PROJECT_NUMBER@cloudbuild.gserviceaccount.com
+serviceAccount: 28146163990-compute@developer.gserviceaccount.com
 
 images:
   # The image built will be stored in Artifact Registry with these tags
