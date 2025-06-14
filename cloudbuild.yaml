@@ -28,7 +28,6 @@ steps:
     args:
       - 'push'
       - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/gemini-tryon-app:latest'
 
   # Step 3: Deploy the image to Google Cloud Run
   # Uses the 'cloud-builders/gcloud' builder to deploy the service.
