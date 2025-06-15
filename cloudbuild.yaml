@@ -11,9 +11,9 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:$COMMIT_SHA'
       - '-t'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:latest'
       - '.'
 
   # Step 2: Push the Docker image with COMMIT_SHA tag to Google Artifact Registry
@@ -21,14 +21,14 @@ steps:
     id: Push-Commit-SHA
     args:
       - 'push'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:$COMMIT_SHA'
 
   # Step 3: Push the Docker image with 'latest' tag to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: Push-Latest
     args:
       - 'push'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:latest'
 
   # Step 4: Deploy the image to Google Cloud Run
   - name: 'gcr.io/google.com/cloudsdk/cloud-sdk'
@@ -39,7 +39,7 @@ steps:
       - 'deploy'
       - 'tnk-tryon-service' # Name of your Cloud Run service
       - '--image'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:$COMMIT_SHA'
       - '--region'
       - 'asia-south1' # Ensure this matches your Artifact Registry location
       - '--platform'
@@ -61,8 +61,8 @@ steps:
 serviceAccount: projects/$PROJECT_ID/serviceAccounts/tnk-tryon-builder@$PROJECT_ID.iam.gserviceaccount.com
 
 images:
-  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
-  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
+  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:$COMMIT_SHA'
+  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
