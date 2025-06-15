@@ -6,7 +6,7 @@
 
 steps:
   # Step 1: Build the Docker image
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/cloud-builders/docker'
     id: Build
     args:
       - 'build'
@@ -17,14 +17,14 @@ steps:
       - '.'
 
   # Step 2: Push the Docker image with COMMIT_SHA tag to Google Artifact Registry
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/cloud-builders/docker'
     id: Push-Commit-SHA
     args:
       - 'push'
       - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:$COMMIT_SHA'
 
   # Step 3: Push the Docker image with 'latest' tag to Google Artifact Registry
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/cloud-builders/docker'
     id: Push-Latest
     args:
       - 'push'
