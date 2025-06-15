@@ -31,7 +31,7 @@ steps:
       - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tnk-tryon-repo/tnk-tryon-app:latest'
 
   # Step 4: Deploy the image to Google Cloud Run
-  - name: 'gcr.io/google.com/cloudsdk/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     id: Deploy
     entrypoint: gcloud
     args:
