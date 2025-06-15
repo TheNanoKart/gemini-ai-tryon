@@ -15,7 +15,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 // Initialize the Google Gen AI client with your API key
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIzaSyDE-IGV1bFPQ3p7ZxD9gHH6qugqOJUobOg";
 if (!GEMINI_API_KEY) {
   console.error("Missing GEMINI_API_KEY environment variable.");
   // Optionally throw an error or handle appropriately
