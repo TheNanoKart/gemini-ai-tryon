@@ -13,10 +13,10 @@ steps:
     id: Build
     args:
       - 'build'
-      # - '-t'
-      # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
       - '-t'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
+      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      # - '-t'
+      # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
       - '.'
     # The image name specifies the Artifact Registry repository (tryon-repo)
     # and the image name (gemini-tryon-app).
@@ -27,8 +27,7 @@ steps:
     id: Push
     args:
       - 'push'
-      # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
+      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
 
   # Step 3: Deploy the image to Google Cloud Run
   # Uses the 'cloud-builders/gcloud' builder to deploy the service.
@@ -41,7 +40,7 @@ steps:
       - 'deploy'
       - 'gemini-tryon-service' # Name of your Cloud Run service
       - '--image'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
+      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
       - '--region'
       - 'asia-south1' # Choose an appropriate GCP region (e.g., us-central1, europe-west1, asia-south1)
       - '--platform'
@@ -50,7 +49,7 @@ steps:
                                  # API Gateway will handle authentication.
       - '--set-env-vars=GOOGLE_API_KEY_SECRET_NAME=gemini-api-key-secret' # Secret Manager secret name
                                                                           # This will be used in app.py to fetch the key.
-      - '--update-secrets=GOOGLE_API_KEY=gemini-api-key-secret:latest' # Mount the secret as an environment variable
+      - '--update-secrets=GOOGLE_API_KEY=gemini-api-key-secret:$COMMIT_SHA' # Mount the secret as an environment variable
       - '--memory'
       - '1Gi' # Allocate 1 GB of memory
       - '--cpu'
@@ -66,12 +65,12 @@ steps:
 # - Cloud Run Admin (roles/run.admin)
 # - Artifact Registry Writer (roles/artifactregistry.writer)
 # - Secret Manager Secret Accessor (roles/secretmanager.secretAccessor)
-serviceAccount: projects/tnk-ai-modelling/serviceAccounts/serviceaccounttest@tnk-ai-modelling.iam.gserviceaccount.com
+# serviceAccount: projects/tnk-ai-modelling/serviceAccounts/28146163990-compute@developer.gserviceaccount.com
 
 images:
   # The image built will be stored in Artifact Registry with these tags
-  # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
-  - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
+  - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+  # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
