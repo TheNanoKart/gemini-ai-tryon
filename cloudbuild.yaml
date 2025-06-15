@@ -13,8 +13,8 @@ steps:
     id: Build
     args:
       - 'build'
-      - '-t'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      # - '-t'
+      # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
       - '-t'
       - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
       - '.'
@@ -27,7 +27,8 @@ steps:
     id: Push
     args:
       - 'push'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
 
   # Step 3: Deploy the image to Google Cloud Run
   # Uses the 'cloud-builders/gcloud' builder to deploy the service.
@@ -40,7 +41,7 @@ steps:
       - 'deploy'
       - 'gemini-tryon-service' # Name of your Cloud Run service
       - '--image'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
       - '--region'
       - 'asia-south1' # Choose an appropriate GCP region (e.g., us-central1, europe-west1, asia-south1)
       - '--platform'
@@ -69,7 +70,7 @@ serviceAccount: projects/tnk-ai-modelling/serviceAccounts/serviceaccounttest@tnk
 
 images:
   # The image built will be stored in Artifact Registry with these tags
-  - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+  # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
   - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
 
 options:
