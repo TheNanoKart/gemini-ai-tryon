@@ -6,50 +6,48 @@
 
 steps:
   # Step 1: Build the Docker image
-  # Uses the 'cloud-builders/docker' builder to build the image from the Dockerfile in the current directory.
-  # The image is tagged with the current commit SHA for unique identification and 'latest' for convenience.
-  # It will be pushed to Google Artifact Registry.
   - name: 'gcr.io/cloud-builders/docker'
     id: Build
     args:
       - 'build'
       - '-t'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
-      # - '-t'
-      # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
+      - '-t'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
       - '.'
-    # The image name specifies the Artifact Registry repository (tryon-repo)
-    # and the image name (gemini-tryon-app).
 
-  # Step 2: Push the Docker image to Google Artifact Registry
-  # Pushes both the commit SHA tagged image and the 'latest' tagged image.
+  # Step 2: Push the Docker image with COMMIT_SHA tag to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    id: Push
+    id: Push-Commit-SHA
     args:
       - 'push'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
 
-  # Step 3: Deploy the image to Google Cloud Run
-  # Uses the 'cloud-builders/gcloud' builder to deploy the service.
-  # Substitutions like tnk-ai-modelling and $COMMIT_SHA are automatically provided by Cloud Build.
+  # Step 3: Push the Docker image with 'latest' tag to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push-Latest
+    args:
+      - 'push'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
+
+  # Step 4: Deploy the image to Google Cloud Run
   - name: 'gcr.io/google.com/cloudsdk/cloud-sdk'
     id: Deploy
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - 'gemini-tryon-service' # Name of your Cloud Run service
+      - 'tnk-tryon-service' # Name of your Cloud Run service
       - '--image'
-      - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
       - '--region'
-      - 'asia-south1' # Choose an appropriate GCP region (e.g., us-central1, europe-west1, asia-south1)
+      - 'asia-south1' # Ensure this matches your Artifact Registry location
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated' # Temporarily allow unauthenticated for API Gateway to reach it.
                                  # API Gateway will handle authentication.
-      - '--set-env-vars=GOOGLE_API_KEY_SECRET_NAME=gemini-api-key-secret' # Secret Manager secret name
-                                                                          # This will be used in app.py to fetch the key.
-      - '--update-secrets=GOOGLE_API_KEY=gemini-api-key-secret:$COMMIT_SHA' # Mount the secret as an environment variable
+      - '--set-env-vars=GOOGLE_API_KEY_SECRET_NAME=tnk-api-key-secret' # Secret Manager secret name
+      - '--update-secrets=GOOGLE_API_KEY=tnk-api-key-secret:latest' # Mount the secret as an environment variable
       - '--memory'
       - '1Gi' # Allocate 1 GB of memory
       - '--cpu'
@@ -59,18 +57,9 @@ steps:
       - '--max-instances'
       - '3' # Maximum number of instances for scaling
 
-# Specify a service account with necessary permissions for Cloud Build.
-# This service account needs permissions to:
-# - Cloud Build Service Account (roles/cloudbuild.builds.builder)
-# - Cloud Run Admin (roles/run.admin)
-# - Artifact Registry Writer (roles/artifactregistry.writer)
-# - Secret Manager Secret Accessor (roles/secretmanager.secretAccessor)
-# serviceAccount: projects/tnk-ai-modelling/serviceAccounts/28146163990-compute@developer.gserviceaccount.com
+# Specify the NEW service account created in Step 3, Phase 1
+serviceAccount: projects/$PROJECT_ID/serviceAccounts/tnk-tryon-builder@$PROJECT_ID.iam.gserviceaccount.com
 
 images:
-  # The image built will be stored in Artifact Registry with these tags
-  - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:$COMMIT_SHA'
-  # - 'asia-south1-docker.pkg.dev/tnk-ai-modelling/tryon-repo/gemini-tryon-app:latest'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
+  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
