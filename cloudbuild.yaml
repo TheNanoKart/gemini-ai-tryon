@@ -63,3 +63,6 @@ serviceAccount: projects/$PROJECT_ID/serviceAccounts/tnk-tryon-builder@$PROJECT_
 images:
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:$COMMIT_SHA'
   - 'asia-south1-docker.pkg.dev/$PROJECT_ID/tryon-repo/tnk-tryon-app:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
